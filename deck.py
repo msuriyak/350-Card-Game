@@ -67,6 +67,26 @@ class Card(object):
             return False
         raise ValueError("Cards with different suits cannot be compared!!")
 
+Points = {
+    Card('Ace', 'Hearts') : 25,
+    Card('King', 'Hearts') : 20,
+    Card('Queen', 'Hearts') : 15,
+    Card('Jack', 'Hearts') : 15,
+    Card('Ace', 'Spades') : 25,
+    Card('King', 'Spades') : 20,
+    Card('Queen', 'Spades') : 15,
+    Card('Jack', 'Spades') : 15,
+    Card('Ace', 'Diamonds') : 25,
+    Card('King', 'Diamonds') : 20,
+    Card('Queen', 'Diamonds') : 15,
+    Card('Jack', 'Diamonds') : 15,
+    Card('Ace', 'Clubs') : 25,
+    Card('King', 'Clubs') : 20,
+    Card('Queen', 'Clubs') : 15,
+    Card('Jack', 'Clubs') : 15,
+    Card(3, 'Spades') : 50
+    }
+
 class Hand(object):
 
     def __init__(self, cards, trump=None):
@@ -100,6 +120,13 @@ class Hand(object):
                         winner = (i+1, card) 
         return winner
 
+    def calc_points(self):
+        points = 0
+        for card in self.cards:
+            if card in Points.keys():
+                points = points + Points[card]
+        return points
+
 class Stack(object):
 
     def __init__(self, cards):
@@ -115,7 +142,8 @@ class Stack(object):
         return self._num_cards
 
     def sort_stack(self):
-        return sorted(self._cards, key=lambda card: (card.suit, DEF_RANKS[card.value])) # Hard coded look into it
+        self._cards = sorted(self._cards, key=lambda card: (card.suit, DEF_RANKS[card.value])) # Hard coded look into it
+        return self
 
     def check_suit(self, suit):
         for card in self._cards:
@@ -137,6 +165,19 @@ class Stack(object):
                 result.append(card)
 
         return result
+
+    def calc_points(self):
+        points = 0
+        for card in self.cards:
+            if card in Points.keys():
+                points = points + Points[card]
+        return Points
+
+    def __repr__(self):
+        out = ''
+        for card in self.cards:
+            out = out + str(card) + '\n'
+        return out
 
 class Deck(object):
     
@@ -185,7 +226,7 @@ class Deck(object):
 
     def distribute_deck(self, num_stacks):
         if self._num_cards % num_stacks == 0:
-            cards_per_stack = self._num_cards / num_stacks
+            cards_per_stack = self._num_cards // num_stacks
             self.shuffle_deck()
             return [self.deck[i*cards_per_stack : (i+1)*cards_per_stack] for i in range(num_stacks)]
 
