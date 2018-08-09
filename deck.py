@@ -92,7 +92,9 @@ class Hand(object):
     def __init__(self, cards, trump=None):
         self._cards = cards
         self._trump = trump
-
+        if trump == 'Joker':
+            self._trump = None
+        
     @property
     def cards(self):
         return self._cards
@@ -126,6 +128,12 @@ class Hand(object):
             if card in Points.keys():
                 points = points + Points[card]
         return points
+
+    def __repr__(self):
+        out = ''
+        for card in self.cards:
+            out = out + str(card) + ', '
+        return out
 
 class Stack(object):
 
@@ -163,7 +171,6 @@ class Stack(object):
         for card in self._cards:
             if card.suit == suit:
                 result.append(card)
-
         return result
 
     def calc_points(self):
